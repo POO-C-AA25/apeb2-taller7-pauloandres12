@@ -1,6 +1,4 @@
 
-import java.util.ArrayList;
-
 /**
  * Problema 2 - Alquiler de peliculas Un videoclub dispone de una serie de
  * películas que pueden estar en DVD (con capacidad en Gb.) o en VHS (una sola
@@ -20,30 +18,76 @@ import java.util.ArrayList;
  *
  * @author paulo
  */
+import java.util.ArrayList;
+
 public class Problema_2_Pelicula {
-    private static void main() {
-        
+
+    public static void main(String[] args) {
+        Pelicula pelicula1 = new Pelicula("Stitch");
+        Pelicula pelicula2 = new Pelicula("La monja");
+        VHS vhs1 = new VHS("ESP", pelicula1, 1.5);
+        System.out.println(vhs1);
     }
 }
 
 class SoportePelicula {
+
     public double precioAlquiler;
+
+    public SoportePelicula(double precioAlq) {
+        this.precioAlquiler = precioAlq;
+    }
+
+    public String toString() {
+        return "SoportePelicula{" + "precioAlq=" + precioAlquiler + '}';
+    }
 }
 
 class DVD extends SoportePelicula {
+
     public String idioma[];
     public ArrayList<Pelicula> pelicula;
-    public void calcularPrecioAlquiler() {
-        this.precioAlquiler += this.precioAlquiler * 0.1;
+
+    public DVD(String[] idioma, ArrayList<Pelicula> pelicula, double precioAlq) {
+        super(precioAlq);
+        this.idioma = idioma;
+        this.pelicula = pelicula;
+    }
+
+    public void calcularPrecioAlq() {
+        this.precioAlquiler += (this.precioAlquiler * 0.1);
+    }
+
+    public String toString() {
+        return "DVD{" + "idioma=" + idioma + ", pelicula=" + pelicula + "}  " + super.toString();
     }
 }
 
 class VHS extends SoportePelicula {
+
     public String idioma;
     public Pelicula pelicula;
+
+    public VHS(String idioma, Pelicula pelicula, double precioAlq) {
+        super(precioAlq);
+        this.idioma = idioma;
+        this.pelicula = pelicula;
+    }
+
+    public String toString() {
+        return "VHS{" + "idioma=" + idioma + ", pelicula=" + pelicula + "}   " + super.toString();
+    }
 }
 
 class Pelicula {
+
     public String titulo;
-    public String autor;
+
+    public Pelicula(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String toString() {
+        return "Pelicula{" + "titulo=" + titulo + '}';
+    }
 }
