@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class Problema_2_Pelicula {
 
     public static void main(String[] args) {
-        Pelicula pelicula1 = new Pelicula("Stitch");
+        Pelicula pelicula1 = new Pelicula("Stic");
         Pelicula pelicula2 = new Pelicula("La monja");
         VHS vhs1 = new VHS("ESP", pelicula1, 1.5);
         System.out.println(vhs1);
@@ -32,14 +32,14 @@ public class Problema_2_Pelicula {
 
 class SoportePelicula {
 
-    public double precioAlquiler;
+    public double precioAlq;
 
     public SoportePelicula(double precioAlq) {
-        this.precioAlquiler = precioAlq;
+        this.precioAlq = precioAlq;
     }
 
     public String toString() {
-        return "SoportePelicula{" + "precioAlq=" + precioAlquiler + '}';
+        return "SoportePelicula{" + "precioAlq=" + precioAlq + '}';
     }
 }
 
@@ -55,7 +55,7 @@ class DVD extends SoportePelicula {
     }
 
     public void calcularPrecioAlq() {
-        this.precioAlquiler += (this.precioAlquiler * 0.1);
+        this.precioAlq += (this.precioAlq * 0.1);
     }
 
     public String toString() {
