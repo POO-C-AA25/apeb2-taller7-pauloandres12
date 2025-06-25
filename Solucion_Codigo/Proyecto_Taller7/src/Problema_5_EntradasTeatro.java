@@ -53,6 +53,186 @@
  *
  * @author paulo
  */
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
+
 public class Problema_5_EntradasTeatro {
+
+    public class SistemaEntradas {
+
+        public static void main(String[] args) {
+            ArrayList<Zona> areas = new ArrayList<>();
+            Zona platinum = new Zona(30.0, 20.0, "Platinum", 150);
+            areas.add(platinum);
+            Zona palco = new Zona(65.0, 35.0, "Palco", 50);
+            areas.add(palco);
+            Zona preferencial = new Zona(22.0, 16.0, "Preferencial", 300);
+            areas.add(preferencial);
+            Zona general = new Zona(18.0, 12.0, "General", 120);
+            areas.add(general);
+
+            int seguir = 0;
+            Scanner lector = new Scanner(System.in);
+            ArrayList<Ticket> vendidos = new ArrayList<>();
+
+            while (seguir == 0) {
+                System.out.println("\nSISTEMA DE VENTA DE ENTRADAS");
+                System.out.println("[1] Vender entrada");
+                System.out.println("[2] Buscar entrada por código");
+                System.out.println("[0] Salir");
+                System.out.print("Ingrese opción: ");
+                int opcion = lector.nextInt();
+
+                switch (opcion) {
+                    case 1:
+                        System.out.println("Seleccione área:");
+                        System.out.println("[1]Platinum\n[2]Palco\n[3]Preferencial\n[4]General");
+                        int opcionArea = lector.nextInt();
+                        Zona areaSeleccionada = areas.get(opcionArea - 1);
+
+                        if (areaSeleccionada.tieneDisponibilidad()) {
+                            System.out.print("Nombre del comprador: ");
+                            String comprador = lector.next();
+
+                            System.out.println("Tipo de entrada:");
+                            System.out.println("[1]Normal\n[2]Socio\n[3]Con descuento");
+                            int tipoEntrada = lector.nextInt();
+
+                            Ticket ticket = null;
+                            switch (tipoEntrada) {
+                                case 1:
+                                    ticket = new Normal(areaSeleccionada, comprador);
+                                    break;
+                                case 2:
+                                    ticket = new Socio(areaSeleccionada, comprador);
+                                    break;
+                                case 3:
+                                    ticket = new DescuentoEntrada(areaSeleccionada, comprador);
+                                    break;
+                                default:
+                                    System.out.println("Tipo de entrada inválido.");
+                                    continue;
+                            }
+
+                            areaSeleccionada.ocuparAsiento();
+                            ticket.calcularPrecio();
+                            ticket.generarCodigo();
+                            vendidos.add(ticket);
+                            System.out.println(ticket);
+                        } else {
+                            System.out.println("¡No hay asientos disponibles en esta área!");
+                        }
+                        break;
+                    case 2:
+                        System.out.print("Ingrese código a buscar: ");
+                        int codigoBusqueda = lector.nextInt();
+                        boolean hallado = false;
+                        for (Ticket t : vendidos) {
+                            if (t.codigo == codigoBusqueda) {
+                                System.out.println("\n>> Comprador: " + t.nombreCliente);
+                                System.out.println(">> Precio: " + t.precio);
+                                System.out.println(">> Área: " + t.area.nombreArea + "\n");
+                                hallado = true;
+                                break;
+                            }
+                        }
+                        if (!hallado) {
+                            System.out.println("No se encontró la entrada con ese código.");
+                        }
+                        break;
+                    case 0:
+                        seguir = 1;
+                        break;
+                    default:
+                        System.out.println("Opción no válida.");
+                }
+            }
+            lector.close();
+        }
+    }
+}
+
+class Zona {
+
+    public double precioNormal;
+    public double precioSocio;
+    public String nombreArea;
+    public int asientosDisponibles;
+
+    public Zona(double precioNormal, double precioSocio, String nombreArea, int asientosDisponibles) {
+        this.precioNormal = precioNormal;
+        this.precioSocio = precioSocio;
+        this.nombreArea = nombreArea;
+        this.asientosDisponibles = asientosDisponibles;
+    }
+
+    public boolean tieneDisponibilidad() {
+        return this.asientosDisponibles > 0;
+    }
+
+    public void ocuparAsiento() {
+        this.asientosDisponibles--;
+    }
+}
+
+class Ticket {
+
+    public Zona area;
+    public int codigo;
+    public String nombreCliente;
+    public double precio;
+
+    public Ticket(Zona area, String nombreCliente) {
+        this.area = area;
+        this.nombreCliente = nombreCliente;
+    }
+
+    public double calcularPrecio() {
+        this.precio = this.area.precioNormal;
+        return precio;
+    }
+
+    public void generarCodigo() {
+        Random rand = new Random();
+        this.codigo = 10000 + rand.nextInt(90000);
+    }
+
+    public String toString() {
+        return "Ticket{" + "Código=" + codigo + ", Precio=" + precio + '}';
+    }
+}
+
+class Normal extends Ticket {
+
+    public Normal(Zona area, String nombreCliente) {
+        super(area, nombreCliente);
+    }
+}
+
+class DescuentoEntrada extends Ticket {
+
+    public DescuentoEntrada(Zona area, String nombreCliente) {
+        super(area, nombreCliente);
+    }
+
+    @Override
+    public double calcularPrecio() {
+        this.precio = super.calcularPrecio() * 0.80; // 20% de descuento
+        return precio;
+    }
+}
+
+class Socio extends Ticket {
+
+    public Socio(Zona area, String nombreCliente) {
+        super(area, nombreCliente);
+    }
+
+    @Override
+    public double calcularPrecio() {
+        this.precio = this.area.precioSocio;
+        return precio;
+    }
 
 }
