@@ -25,184 +25,135 @@
  *
  * @author paulo
  */
+import java.util.ArrayList;
+
 public class Problema_4_NominaTrabajadores {
 
     public static void main(String[] args) {
-        ArrayList<Trabajador> listaEmpleados = new ArrayList<>();
-        Nomina nomina = new Nomina(listaEmpleados);
-        Jefe jefe1 = new Jefe("Rene", "Morales", "Av. Amazonas", "001");
-        Jefe jefe2 = new Jefe("Luis", "Quito", "Av. El Inca", "002");
-        Jefe jefe3 = new Jefe("Maria", "Valdivieso", "Av. República", "003");
-        listaEmpleados.add(jefe1);
-        listaEmpleados.add(jefe2);
-        listaEmpleados.add(jefe3);
+        Jefe jefePrincipal = new Jefe("Roberto", "Delgado", "Av. Amazonas 1101", "99887766X", 2800);
+        jefePrincipal.jefe = jefePrincipal;
 
-        FijoMensual fijo1 = new FijoMensual(jefe1, "Carlos", "Correa", "Calle Sucre", "101");
-        listaEmpleados.add(fijo1);
+        Empresa empresa = new Empresa(jefePrincipal);
 
-        Comisionista com1 = new Comisionista(jefe2, 8, "Daniela", "Jaramillo", "Barrio El Bosque", "202");
-        listaEmpleados.add(com1);
+        FijosMensuales empleado1 = new FijosMensuales("Camila", "Espinoza", "Calle Bolívar 202", "11223344P", jefePrincipal, 1450);
+        PorHoras empleado2 = new PorHoras("Esteban", "Vega", "Av. Colón 300", "55667788Q", jefePrincipal, 10.25, 44);
+        Comisionistas empleado3 = new Comisionistas("Fernanda", "Zambrano", "Calle Sucre 908", "33445566R", jefePrincipal, 9200, 0.03);
 
-        PorHoras ph1 = new PorHoras(jefe3, 50, "Esteban", "Chamba", "Conjunto Los Alamos", "303");
-        listaEmpleados.add(ph1);
-        listaEmpleados.add(ph1);
+        empresa.darAltaTrabajador(empleado1);
+        empresa.darAltaTrabajador(empleado2);
+        empresa.darAltaTrabajador(empleado3);
 
-        for (Trabajador trab : nomina.listaEmpleados) {
-            trab.calcularSueldo();
-        }
-
-        nomina.CalcularHoras();
-        nomina.CalcularVentas();
-        System.out.println(nomina.dibujarnomina());
-        nomina.despedir("456");
-        System.out.println("\n\n================!!!!! DNI: 456 - ESTAS DESPEDIDO!!!!!================\n\n");
-        System.out.println(nomina.dibujarnomina());
+        empresa.listaNomina();
     }
-}
+    String nombres;
+    String apellidos;
+    String direccion;
+    String DNI;
+    Jefe jefe;
 
-class Nomina {
-
-    public ArrayList<Trabajador> listaEmpleados;
-    public int horas;
-    public int ventas;
-
-    public Nomina(ArrayList<Trabajador> listaEmpleados) {
-        this.listaEmpleados = listaEmpleados;
-    }
-
-    public void despedir(String DNI) {
-        for (int i = 0; i < listaEmpleados.size(); i++) {
-            if (listaEmpleados.get(i).dni.equalsIgnoreCase(DNI)) {
-                listaEmpleados.remove(i);
-            }
-        }
-    }
-
-    public void CalcularHoras() {
-        for (Trabajador trabajador : listaEmpleados) {
-            if (trabajador instanceof PorHoras) {
-                this.horas += ((PorHoras) trabajador).horas;
-            }
-        }
-    }
-
-    public void CalcularVentas() {
-        for (Trabajador trabajador : listaEmpleados) {
-            if (trabajador instanceof Comisionista) {
-                this.ventas += ((Comisionista) trabajador).ventas;
-            }
-        }
-    }
-
-    public String dibujarnomina() {
-        String nomina = "";
-        for (Trabajador trabajador : listaEmpleados) {
-            nomina += trabajador + "\n";
-        }
-        nomina += "\n\nSe trabajaron: " + horas + "      -      Se hicieron " + ventas + " ventas";
-        return nomina;
-    }
-}
-
-class Trabajador {
-
-    public String nombre;
-    public String apellido;
-    public String direccion;
-    public String dni;
-    public double sueldo;
-
-    public Trabajador(String nombre, String apellido, String direccion, String dni) {
-        this.nombre = nombre;
-        this.apellido = apellido;
+    public Problema_4_NominaTrabajadores(String nombres, String apellidos, String direccion, String DNI, Jefe jefe) {
+        this.nombres = nombres;
+        this.apellidos = apellidos;
         this.direccion = direccion;
-        this.dni = dni;
-    }
-
-    public void calcularSueldo() {
-    }
-
-    @Override
-    public String toString() {
-        return "nombre=" + nombre + ", apellido=" + apellido + ", direccion=" + direccion + ", DNI=" + dni + ", sueldo=" + sueldo;
-    }
-}
-
-class FijoMensual extends Trabajador {
-
-    public Jefe jefe;
-
-    public FijoMensual(Jefe jefe, String nombre, String apellido, String direccion, String dni) {
-        super(nombre, apellido, direccion, dni);
+        this.DNI = DNI;
         this.jefe = jefe;
     }
 
-    @Override
-    public void calcularSueldo() {
-        this.sueldo = 350;
+    public double calcularSueldo() {
+        return 0;
     }
 
-    @Override
     public String toString() {
-        return super.toString() + " jefe=" + jefe.nombre;
+        return "Trabajador: " + nombres + " " + apellidos + " (" + DNI + ")\n"
+                + "Dirección: " + direccion + "\n"
+                + "Jefe: " + jefe.nombres + " " + jefe.apellidos + "\n"
+                + "Sueldo: " + calcularSueldo() + "\n";
     }
 }
 
-class Comisionista extends Trabajador {
+class Empresa {
 
-    public Jefe jefe;
-    public int ventas;
+    Jefe jefeGeneral;
+    ArrayList<Problema_4_NominaTrabajadores> trabajadores;
 
-    public Comisionista(Jefe jefe, int ventasRealizadas, String nombre, String apellido, String direccion, String dni) {
-        super(nombre, apellido, direccion, dni);
-        this.jefe = jefe;
-        this.ventas = ventasRealizadas;
+    public Empresa(Jefe jefeGeneral) {
+        this.jefeGeneral = jefeGeneral;
+        trabajadores = new ArrayList<>();
+        trabajadores.add(jefeGeneral);
     }
 
-    @Override
-    public void calcularSueldo() {
-        this.sueldo = (this.ventas * 100) * 0.15;
+    public void darAltaTrabajador(Problema_4_NominaTrabajadores t) {
+        trabajadores.add(t);
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " jefe=" + jefe.nombre + ", ventasRealiadas=" + ventas;
-    }
-}
-
-class PorHoras extends Trabajador {
-
-    public Jefe jefe;
-    public int horas;
-
-    public PorHoras(Jefe jefe, int horasTrabajadas, String nombre, String apellido, String direccion, String dni) {
-        super(nombre, apellido, direccion, dni);
-        this.jefe = jefe;
-        this.horas = horasTrabajadas;
-    }
-
-    @Override
-    public void calcularSueldo() {
-        this.sueldo = this.horas * 7;
-        if (this.horas > 40) {
-            this.sueldo = (40 * 7) + (this.horas - 40) * 14;
+    public void listaNomina() {
+        System.out.println("NOMINA DE LA EMPRESA");
+        for (Problema_4_NominaTrabajadores t : trabajadores) {
+            System.out.println(t);
         }
     }
+}
 
-    @Override
-    public String toString() {
-        return super.toString() + " jefe=" + jefe.nombre + ", horasTrabajadas=" + horas;
+class Jefe extends Problema_4_NominaTrabajadores {
+
+    double sueldo;
+
+    public Jefe(String nombres, String apellidos, String direccion, String DNI, double sueldo) {
+        super(nombres, apellidos, direccion, DNI, null);
+        this.sueldo = sueldo;
+    }
+
+    public double calcularSueldo() {
+        return sueldo;
     }
 }
 
-class Jefe extends Trabajador {
+class FijosMensuales extends Problema_4_NominaTrabajadores {
 
-    public Jefe(String nombre, String apellido, String direccion, String DNI) {
-        super(nombre, apellido, direccion, DNI);
+    double sueldo;
+
+    public FijosMensuales(String nombres, String apellidos, String direccion, String DNI, Jefe jefe, double sueldo) {
+        super(nombres, apellidos, direccion, DNI, jefe);
+        this.sueldo = sueldo;
     }
 
-    @Override
-    public void calcularSueldo() {
-        this.sueldo = 10000;
+    public double calcularSueldo() {
+        return sueldo;
+    }
+}
+
+class PorHoras extends Problema_4_NominaTrabajadores {
+
+    double valorHora;
+    int horasTrabajadas;
+
+    public PorHoras(String nombres, String apellidos, String direccion, String DNI, Jefe jefe, double valorHora, int horasTrabajadas) {
+        super(nombres, apellidos, direccion, DNI, jefe);
+        this.valorHora = valorHora;
+        this.horasTrabajadas = horasTrabajadas;
+    }
+
+    public double calcularSueldo() {
+        if (horasTrabajadas <= 40) {
+            return horasTrabajadas * valorHora;
+        } else {
+            return 40 * valorHora + (horasTrabajadas - 40) * (valorHora * 1.5);
+        }
+    }
+}
+
+class Comisionistas extends Problema_4_NominaTrabajadores {
+
+    int ventasMes;
+    double comision;
+
+    public Comisionistas(String nombres, String apellidos, String direccion, String DNI, Jefe jefe, int ventasMes, double comision) {
+        super(nombres, apellidos, direccion, DNI, jefe);
+        this.ventasMes = ventasMes;
+        this.comision = comision;
+    }
+
+    public double calcularSueldo() {
+        return ventasMes * comision;
     }
 }

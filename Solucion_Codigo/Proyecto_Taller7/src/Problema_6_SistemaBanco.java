@@ -29,4 +29,98 @@
  */
 public class Problema_6_SistemaBanco {
 
+    public static void main(String[] args) {
+        CuentaCheques CuentaCheques = new CuentaCheques("555", "María");
+        CuentaAhorros CuentaAhorros = new CuentaAhorros("888", "Lucía", 3);
+        CuentaPlatino CuentaPlatino = new CuentaPlatino("444", "Carlos");
+
+        CuentaCheques.depositar(200);
+        CuentaCheques.retirar(100);
+        System.out.println("Cuenta Cheques: " + CuentaCheques.toString());
+
+        CuentaAhorros.depositar(150);
+        CuentaAhorros.calcularInteres();
+        CuentaAhorros.retirar(30);
+        System.out.println("Cuenta Ahorros: " + CuentaAhorros.toString());
+
+        CuentaPlatino.depositar(1200);
+        CuentaPlatino.calcularInteres();
+        CuentaPlatino.retirar(500);
+        System.out.println("Cuenta Platino: " + CuentaPlatino.toString());
+
+    }
+}
+
+class CuentaBancaria {
+
+    public String numeroCuenta;
+    public String nombreCliente;
+    public double balance;
+
+    public CuentaBancaria(String numeroCuenta, String nombreCliente) {
+        this.numeroCuenta = numeroCuenta;
+        this.nombreCliente = nombreCliente;
+        this.balance = 0.0;
+    }
+
+    public void depositar(double cantidad) {
+        if (cantidad > 0) {
+            balance += cantidad;
+        }
+    }
+
+    public void retirar(double cantidad) {
+        if (cantidad > 0) {
+            balance -= cantidad;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "CuentaBancaria{" + "numeroCuenta=" + numeroCuenta + ", "
+                + "nombreCliente=" + nombreCliente + ", balance=" + balance + '}';
+    }
+
+}
+
+class CuentaCheques extends CuentaBancaria {
+
+    public CuentaCheques(String numeroCuenta, String nombreCliente) {
+        super(numeroCuenta, nombreCliente);
+    }
+
+}
+
+class CuentaAhorros extends CuentaBancaria {
+
+    public double interes;
+
+    public CuentaAhorros(String numeroCuenta, String nombreCliente, double tasaInteres) {
+        super(numeroCuenta, nombreCliente);
+        this.interes = tasaInteres;
+    }
+
+    public void calcularInteres() {
+        balance += balance * interes / 100;
+    }
+
+    @Override
+    public void retirar(double cantidad) {
+        if (cantidad > 0 && cantidad <= balance) {
+            balance -= cantidad;
+        }
+    }
+}
+
+class CuentaPlatino extends CuentaBancaria {
+
+    public double interes = 10.0;
+
+    public CuentaPlatino(String numeroCuenta, String nombreCliente) {
+        super(numeroCuenta, nombreCliente);
+    }
+
+    public void calcularInteres() {
+        balance += balance * interes / 100;
+    }
 }
